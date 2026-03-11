@@ -1,13 +1,6 @@
-# ============================================================
 #  STUDENT PERFORMANCE — STEP BY STEP ML PROJECT
-#  Run each STEP block independently in your IDE / Jupyter
-# ============================================================
 
-# ──────────────────────────────────────────────────────────────
 # STEP 0 ▸ INSTALL & IMPORT LIBRARIES
-# ──────────────────────────────────────────────────────────────
-# Run this in terminal first:
-#   pip install pandas numpy matplotlib scikit-learn xgboost
 
 import pandas as pd
 import numpy as np
@@ -15,13 +8,10 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
 
-print("✅ All libraries imported successfully!")
+print("All libraries imported successfully!")
 
-
-# ──────────────────────────────────────────────────────────────
 # STEP 1 ▸ LOAD THE DATASET
-# ──────────────────────────────────────────────────────────────
-# 👉 Change the path below to where YOUR file is saved
+# Load the dataset
 df = pd.read_csv('Student_Performance.csv')
 
 print("Shape:", df.shape)          # (rows, columns)
@@ -31,9 +21,7 @@ print("\nColumn data types:")
 print(df.dtypes)
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 2 ▸ EXPLORE THE DATA (EDA)
-# ──────────────────────────────────────────────────────────────
 
 # --- 2a. Basic statistics ---
 print("📊 Basic Statistics:")
