@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 
 print("All libraries imported successfully!")
 
-# STEP 1 ▸ LOAD THE DATASET
+# STEP 1: LOAD THE DATASET
 # Load the dataset
 df = pd.read_csv('Student_Performance.csv')
 
@@ -21,32 +21,30 @@ print("\nColumn data types:")
 print(df.dtypes)
 
 
-# STEP 2 ▸ EXPLORE THE DATA (EDA)
+# STEP 2 : EXPLORE THE DATA (EDA)
 
-# --- 2a. Basic statistics ---
-print("📊 Basic Statistics:")
+#2a. Basic statistics 
+print("Basic Statistics:")
 print(df.describe())
 
-# --- 2b. Check for missing values ---
-print("\n🔍 Missing Values:")
+#2b. Check for missing values
+print("\nMissing Values:")
 print(df.isnull().sum())
 
-# --- 2c. Check unique values in categorical column ---
-print("\n📌 Unique values in 'Extracurricular Activities':")
+#2c. Check unique values in categorical column
+print("\n Unique values in 'Extracurricular Activities':")
 print(df['Extracurricular Activities'].value_counts())
 
-# --- 2d. Visualize target distribution ---
+#2d. Visualize target distribution
 plt.figure(figsize=(8, 4))
 plt.hist(df['Performance Index'], bins=30, color='#7c6af7', edgecolor='white')
 plt.title('Distribution of Performance Index (Target)')
 plt.xlabel('Performance Index')
 plt.ylabel('Count')
 plt.tight_layout()
-plt.savefig('step2_target_distribution.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step2_target_distribution.png")
 
-# --- 2e. Correlation heatmap ---
+#2e. Correlation heatmap
 import matplotlib.colors as mcolors
 
 df_temp = df.copy()
@@ -65,46 +63,37 @@ for i in range(len(corr)):
         ax.text(j, i, f'{corr.iloc[i, j]:.2f}', ha='center', va='center', fontsize=8)
 plt.title('Correlation Matrix', pad=20)
 plt.tight_layout()
-plt.savefig('step2_correlation.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step2_correlation.png")
 
 
-# ──────────────────────────────────────────────────────────────
-# STEP 3 ▸ PREPROCESSING — ENCODE + SPLIT
-# ──────────────────────────────────────────────────────────────
+# STEP 3: PREPROCESSING — ENCODE + SPLIT
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-# --- 3a. Encode categorical column ---
+#3a. Encode categorical column
 le = LabelEncoder()
 df['Extracurricular Activities'] = le.fit_transform(df['Extracurricular Activities'])
 # Yes → 1,  No → 0
 print("After encoding:")
 print(df['Extracurricular Activities'].value_counts())
 
-# --- 3b. Separate features (X) and target (y) ---
+#3b. Separate features (X) and target (y)
 X = df.drop('Performance Index', axis=1)   # All columns except target
 y = df['Performance Index']                # Target column
 
-print("\n✅ Features (X):", X.columns.tolist())
-print("✅ Target (y):", y.name)
-print("✅ X shape:", X.shape)
+print("\n Features (X):", X.columns.tolist())
+print(" Target (y):", y.name)
+print(" X shape:", X.shape)
 
-# --- 3c. Train / Test Split (80% train, 20% test) ---
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
-    test_size=0.2,      # 20% for testing
-    random_state=42     # Fixed seed for reproducibility
-)
+#3c. Train / Test Split (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2,random_state=42)  # 20% for testing   
+# Fixed seed for reproducibility
 
-print(f"\n✅ Training samples : {X_train.shape[0]}")
-print(f"✅ Testing samples  : {X_test.shape[0]}")
+print(f"\n Training samples : {X_train.shape[0]}")
+print(f" Testing samples  : {X_test.shape[0]}")
 
 
-# ──────────────────────────────────────────────────────────────
-# STEP 4 ▸ EVALUATION HELPER FUNCTION
-# ──────────────────────────────────────────────────────────────
+# STEP 4 : EVALUATION HELPER FUNCTION
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 # We'll call this function after training each model
@@ -113,14 +102,14 @@ def evaluate(model_name, y_true, y_pred):
     mae  = mean_absolute_error(y_true, y_pred)
     r2   = r2_score(y_true, y_pred)
     print(f"\n📌 {model_name}")
-    print(f"   RMSE : {rmse:.4f}  ← lower is better")
-    print(f"   MAE  : {mae:.4f}  ← lower is better")
-    print(f"   R²   : {r2:.4f}  ← closer to 1 is better")
+    print(f"   RMSE : {rmse:.4f}  - lower is better")
+    print(f"   MAE  : {mae:.4f}  - lower is better")
+    print(f"   R²   : {r2:.4f}  - closer to 1 is better")
     return {'Model': model_name, 'RMSE': round(rmse,4),
             'MAE': round(mae,4), 'R²': round(r2,4)}
 
 all_results = []   # We'll collect results from every model here
-print("✅ evaluate() function ready!")
+print(" evaluate() function ready!")
 
 
 # ──────────────────────────────────────────────────────────────
