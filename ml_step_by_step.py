@@ -155,18 +155,16 @@ plt.tight_layout()
 plt.show()
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 6 ▸ MODEL 2 — DECISION TREE
-# ──────────────────────────────────────────────────────────────
-# 📖 WHAT IT DOES:
+#  WHAT IT DOES:
 #    Splits the dataset into smaller groups using IF/THEN rules.
 #    Each leaf gives a prediction = mean of samples in that leaf.
-#    ✅ Visualisable | ✅ Handles non-linearity
-#    ❌ Overfits easily if not limited (use max_depth!)
+#     Visualisable |  Handles non-linearity
+#     Overfits easily if not limited (use max_depth!)
 
 from sklearn.tree import DecisionTreeRegressor, export_text
 
-# --- 6a. Create & train ---
+#6a. Create & train
 dt = DecisionTreeRegressor(
     max_depth=5,          # Limit depth to prevent overfitting
     min_samples_leaf=10,  # Leaf must have at least 10 samples
@@ -174,38 +172,36 @@ dt = DecisionTreeRegressor(
 )
 dt.fit(X_train, y_train)
 
-# --- 6b. Predict & evaluate ---
+#6b. Predict & evaluate
 y_pred_dt = dt.predict(X_test)
 res = evaluate("Decision Tree", y_test, y_pred_dt)
 all_results.append(res)
 
-# --- 6c. Print tree rules (first 3 levels) ---
-print("\n🌳 Decision Tree Rules (depth ≤ 3):")
+#6c. Print tree rules (first 3 levels)
+print("\n Decision Tree Rules (depth ≤ 3):")
 rules = export_text(dt, feature_names=list(X.columns), max_depth=3)
 print(rules[:1000], "\n...")
 
-# --- 6d. Feature importance ---
+#6d. Feature importance
 fi = pd.DataFrame({
     'Feature': X.columns,
     'Importance': dt.feature_importances_
 }).sort_values('Importance', ascending=False)
-print("\n📊 Feature Importances:")
+print("\n Feature Importances:")
 print(fi.to_string(index=False))
 
-# --- 6e. Plot feature importance ---
+#6e. Plot feature importance
 plt.figure(figsize=(7, 4))
 plt.barh(fi['Feature'][::-1], fi['Importance'][::-1], color='#56d364')
 plt.xlabel('Importance Score')
 plt.title('Decision Tree — Feature Importance')
 plt.tight_layout()
-plt.savefig('step6_decision_tree.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step6_decision_tree.png")
 
-# ⚠️ OVERFITTING CHECK: compare train vs test R²
+# OVERFITTING CHECK: compare train vs test R²
 train_r2 = r2_score(y_train, dt.predict(X_train))
 test_r2  = r2_score(y_test,  y_pred_dt)
-print(f"\n⚠️  Overfitting check → Train R²: {train_r2:.4f} | Test R²: {test_r2:.4f}")
+print(f"\n Overfitting check → Train R²: {train_r2:.4f} | Test R²: {test_r2:.4f}")
 print("   (Large gap = overfitting. Reduce max_depth to fix.)")
 
 
