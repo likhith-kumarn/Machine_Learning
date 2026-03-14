@@ -101,7 +101,7 @@ def evaluate(model_name, y_true, y_pred):
     rmse = np.sqrt(mean_squared_error(y_true, y_pred))
     mae  = mean_absolute_error(y_true, y_pred)
     r2   = r2_score(y_true, y_pred)
-    print(f"\n📌 {model_name}")
+    print(f"\n {model_name}")
     print(f"   RMSE : {rmse:.4f}  - lower is better")
     print(f"   MAE  : {mae:.4f}  - lower is better")
     print(f"   R²   : {r2:.4f}  - closer to 1 is better")
@@ -112,39 +112,37 @@ all_results = []   # We'll collect results from every model here
 print(" evaluate() function ready!")
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 5 ▸ MODEL 1 — LINEAR REGRESSION
-# ──────────────────────────────────────────────────────────────
-# 📖 WHAT IT DOES:
+# WHAT IT DOES:
 #    Finds the best-fit line (or hyperplane) through the data.
-#    Equation:  y = b0 + b1*x1 + b2*x2 + ...
+#    Equation:  y = b0 + b1*x1 + b2*x2 + ..
 #    It minimises the sum of squared errors (OLS method).
-#    ✅ Great baseline | ✅ Very interpretable
+#     Great baseline |  Very interpretable
 
 from sklearn.linear_model import LinearRegression
 
-# --- 5a. Create & train the model ---
+#5a. Create & train the model
 lr = LinearRegression()
 lr.fit(X_train, y_train)          # Train on training data
 
-# --- 5b. Make predictions ---
+#5b. Make predictions 
 y_pred_lr = lr.predict(X_test)    # Predict on test data
 
-# --- 5c. Evaluate ---
+# 5c. Evaluate
 res = evaluate("Linear Regression", y_test, y_pred_lr)
 all_results.append(res)
 
-# --- 5d. Inspect coefficients (which features matter most?) ---
+#5d. Inspect coefficients (which features matter most?)
 coef_df = pd.DataFrame({
     'Feature': X.columns,
     'Coefficient': lr.coef_
 }).sort_values('Coefficient', key=abs, ascending=False)
 
-print("\n📊 Coefficients (how much each feature moves the score):")
+print("\n Coefficients (how much each feature moves the score):")
 print(coef_df.to_string(index=False))
 print(f"\nIntercept (b0): {lr.intercept_:.4f}")
 
-# --- 5e. Plot: Actual vs Predicted ---
+#5e. Plot: Actual vs Predicted
 plt.figure(figsize=(6, 5))
 plt.scatter(y_test, y_pred_lr, alpha=0.3, color='#7c6af7', s=10)
 plt.plot([y_test.min(), y_test.max()],
@@ -154,9 +152,7 @@ plt.ylabel('Predicted')
 plt.title('Linear Regression — Actual vs Predicted')
 plt.legend()
 plt.tight_layout()
-plt.savefig('step5_linear_regression.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step5_linear_regression.png")
 
 
 # ──────────────────────────────────────────────────────────────
