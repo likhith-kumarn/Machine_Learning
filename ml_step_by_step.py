@@ -205,19 +205,17 @@ print(f"\n Overfitting check → Train R²: {train_r2:.4f} | Test R²: {test_r2:
 print("   (Large gap = overfitting. Reduce max_depth to fix.)")
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 7 ▸ MODEL 3 — RANDOM FOREST
-# ──────────────────────────────────────────────────────────────
-# 📖 WHAT IT DOES:
+#  WHAT IT DOES:
 #    Trains MANY decision trees, each on a random subset of data
 #    and random subset of features (this is called "bagging").
 #    Final prediction = AVERAGE of all trees.
-#    ✅ Much less overfitting than single tree
-#    ✅ Built-in OOB (Out-of-Bag) score = free validation!
+#     Much less overfitting than single tree
+#     Built-in OOB (Out-of-Bag) score = free validation!
 
 from sklearn.ensemble import RandomForestRegressor
 
-# --- 7a. Create & train ---
+# 7a. Create & train
 rf = RandomForestRegressor(
     n_estimators=100,   # Number of trees
     max_depth=10,       # Max depth per tree
@@ -227,24 +225,24 @@ rf = RandomForestRegressor(
 )
 rf.fit(X_train, y_train)
 
-# --- 7b. Predict & evaluate ---
+#7b. Predict & evaluate
 y_pred_rf = rf.predict(X_test)
 res = evaluate("Random Forest", y_test, y_pred_rf)
 all_results.append(res)
 
-# --- 7c. OOB Score (bonus: free R² estimate without test set) ---
-print(f"\n🎯 OOB Score (Out-of-Bag R²): {rf.oob_score_:.4f}")
+#7c. OOB Score (bonus: free R² estimate without test set)
+print(f"\n OOB Score (Out-of-Bag R²): {rf.oob_score_:.4f}")
 print("   (This is a free validation score — no test data used!)")
 
-# --- 7d. Feature importance ---
+#7d. Feature importance
 fi_rf = pd.DataFrame({
     'Feature': X.columns,
     'Importance': rf.feature_importances_
 }).sort_values('Importance', ascending=False)
-print("\n📊 Feature Importances:")
+print("\n Feature Importances:")
 print(fi_rf.to_string(index=False))
 
-# --- 7e. Plot: number of trees vs error ---
+#7e. Plot: number of trees vs error
 errors = []
 for n in range(1, 101, 5):
     rf_temp = RandomForestRegressor(n_estimators=n, random_state=42, n_jobs=-1)
@@ -259,24 +257,20 @@ plt.ylabel('RMSE')
 plt.title('Random Forest — RMSE vs Number of Trees')
 plt.grid(alpha=0.4)
 plt.tight_layout()
-plt.savefig('step7_random_forest.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step7_random_forest.png")
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 8 ▸ MODEL 4 — GRADIENT BOOSTING
-# ──────────────────────────────────────────────────────────────
-# 📖 WHAT IT DOES:
+#  WHAT IT DOES:
 #    Builds trees SEQUENTIALLY. Each new tree fixes the ERRORS
 #    (residuals) made by the previous trees.
 #    Uses gradient descent in function space.
-#    ✅ Very powerful | ✅ Often best on tabular data
-#    ❌ Slower to train | ❌ More hyperparams to tune
+#    Very powerful |  Often best on tabular data
+#    Slower to train |  More hyperparams to tune
 
 from sklearn.ensemble import GradientBoostingRegressor
 
-# --- 8a. Create & train ---
+# 8a. Create & train 
 gb = GradientBoostingRegressor(
     n_estimators=200,    # Number of boosting rounds
     learning_rate=0.1,   # Step size (lower = more rounds needed)
@@ -286,14 +280,14 @@ gb = GradientBoostingRegressor(
 )
 gb.fit(X_train, y_train)
 
-# --- 8b. Predict & evaluate ---
+#8b. Predict & evaluate
 y_pred_gb = gb.predict(X_test)
 res = evaluate("Gradient Boosting", y_test, y_pred_gb)
 all_results.append(res)
 
-# --- 8c. Training loss curve ---
+#8c. Training loss curve
 train_loss = gb.train_score_
-print(f"\n📉 Loss: {train_loss[0]:.2f} (start) → {train_loss[-1]:.4f} (end)")
+print(f"\n Loss: {train_loss[0]:.2f} (start) → {train_loss[-1]:.4f} (end)")
 
 plt.figure(figsize=(7, 4))
 plt.plot(train_loss, color='#f97583', lw=2)
@@ -302,12 +296,10 @@ plt.ylabel('Training Loss (MSE)')
 plt.title('Gradient Boosting — Training Loss Curve')
 plt.grid(alpha=0.4)
 plt.tight_layout()
-plt.savefig('step8_gradient_boosting.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step8_gradient_boosting.png")
 
-# --- 8d. Learning rate experiment ---
-print("\n📊 Effect of learning_rate (n_estimators fixed at 100):")
+#8d. Learning rate experiment
+print("\n Effect of learning_rate (n_estimators fixed at 100):")
 for lr_val in [0.01, 0.05, 0.1, 0.2, 0.5]:
     gb_temp = GradientBoostingRegressor(n_estimators=100,
                                          learning_rate=lr_val, random_state=42)
