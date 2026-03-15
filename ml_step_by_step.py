@@ -307,19 +307,18 @@ for lr_val in [0.01, 0.05, 0.1, 0.2, 0.5]:
     r2_temp = r2_score(y_test, gb_temp.predict(X_test))
     print(f"   learning_rate={lr_val:.2f}  → R²: {r2_temp:.4f}")
 
-
-# ──────────────────────────────────────────────────────────────
+'''
 # STEP 9 ▸ MODEL 5 — XGBOOST
-# ──────────────────────────────────────────────────────────────
-# 📖 WHAT IT DOES:
+#  WHAT IT DOES:
 #    XGBoost = eXtreme Gradient Boosting.
 #    Same idea as GradientBoosting but:
-#    ✦ Faster (histogram binning, parallel trees)
-#    ✦ Built-in L1 + L2 regularisation
-#    ✦ Handles missing values natively
-#    ✅ Wins most Kaggle tabular competitions!
+#     Faster (histogram binning, parallel trees)
+#     Built-in L1 + L2 regularisation
+#     Handles missing values natively
+#     Wins most Kaggle tabular competitions!
 
-# Option A: If you have XGBoost installed (pip install xgboost)
+# Option A: If you have XGBoost installed (pip install xgboost) '''
+
 try:
     from xgboost import XGBRegressor
     xgb = XGBRegressor(
@@ -339,11 +338,11 @@ try:
     y_pred_xgb = xgb.predict(X_test)
     res = evaluate("XGBoost", y_test, y_pred_xgb)
     all_results.append(res)
-    print("\n✅ Used: xgboost.XGBRegressor")
+    print("\n Used: xgboost.XGBRegressor")
 
 # Option B: XGBoost not installed → use sklearn's equivalent
 except ImportError:
-    print("ℹ️  xgboost not installed. Using sklearn HistGradientBoostingRegressor")
+    print("  xgboost not installed. Using sklearn HistGradientBoostingRegressor")
     print("   (Same idea — histogram-based boosting with regularisation)")
     from sklearn.ensemble import HistGradientBoostingRegressor
     xgb = HistGradientBoostingRegressor(
@@ -358,7 +357,7 @@ except ImportError:
     res = evaluate("XGBoost-style (HistGB)", y_test, y_pred_xgb)
     all_results.append(res)
 
-# --- 9b. Plot Actual vs Predicted ---
+#9b. Plot Actual vs Predicted
 plt.figure(figsize=(6, 5))
 plt.scatter(y_test, y_pred_xgb, alpha=0.3, color='#79c0ff', s=10)
 plt.plot([y_test.min(), y_test.max()],
@@ -368,23 +367,19 @@ plt.ylabel('Predicted')
 plt.title('XGBoost — Actual vs Predicted')
 plt.legend()
 plt.tight_layout()
-plt.savefig('step9_xgboost.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step9_xgboost.png")
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 10 ▸ HYPERPARAMETER TUNING — GridSearchCV
-# ──────────────────────────────────────────────────────────────
-# 📖 WHAT IT DOES:
+#  WHAT IT DOES:
 #    Automatically tries every combination of parameters you specify.
 #    Uses cross-validation to pick the best combination.
-#    ✅ Removes guesswork from tuning
-#    ❌ Can be slow for large grids (use RandomizedSearchCV then)
+#    Removes guesswork from tuning
+#    Can be slow for large grids (use RandomizedSearchCV then)
 
 from sklearn.model_selection import GridSearchCV
 
-# --- 10a. Define the parameter grid ---
+#10a. Define the parameter grid
 # Each key = parameter name, each list = values to try
 param_grid = {
     'n_estimators':    [50, 100, 150],    # 3 values
@@ -394,8 +389,8 @@ param_grid = {
 # Total combinations: 3 × 3 × 3 = 27
 # With cv=3:  27 × 3 = 81 model fits
 
-print(f"🔍 Searching {3*3*3} combinations × 3-fold = 81 fits...")
-print("⏳ Please wait...\n")
+print(f" Searching {3*3*3} combinations × 3-fold = 81 fits...")
+print(" Please wait...\n")
 
 grid_search = GridSearchCV(
     estimator=RandomForestRegressor(random_state=42, n_jobs=-1),
@@ -407,17 +402,17 @@ grid_search = GridSearchCV(
 )
 grid_search.fit(X_train, y_train)
 
-# --- 10b. Best results ---
-print(f"\n✅ Best Parameters : {grid_search.best_params_}")
-print(f"✅ Best CV RMSE    : {-grid_search.best_score_:.4f}")
+#10b. Best results
+print(f"\n Best Parameters : {grid_search.best_params_}")
+print(f" Best CV RMSE    : {-grid_search.best_score_:.4f}")
 
-# --- 10c. Evaluate best model on test set ---
+#10c. Evaluate best model on test set
 best_model = grid_search.best_estimator_
 y_pred_tuned = best_model.predict(X_test)
 res = evaluate("RF (GridSearch Tuned)", y_test, y_pred_tuned)
 all_results.append(res)
 
-# --- 10d. View top 10 combinations ---
+#10d. View top 10 combinations
 cv_results_df = pd.DataFrame(grid_search.cv_results_)
 top10 = cv_results_df.nlargest(10, 'mean_test_score')[
     ['param_n_estimators', 'param_max_depth',
@@ -425,10 +420,10 @@ top10 = cv_results_df.nlargest(10, 'mean_test_score')[
 ].copy()
 top10['mean_test_score'] = -top10['mean_test_score']   # convert to positive RMSE
 top10.columns = ['n_estimators', 'max_depth', 'min_samples_leaf', 'mean_RMSE']
-print("\n📊 Top 10 Parameter Combinations:")
+print("\n Top 10 Parameter Combinations:")
 print(top10.round(4).to_string(index=False))
 
-# --- 10e. Heatmap of n_estimators vs max_depth ---
+#10e. Heatmap of n_estimators vs max_depth
 pivot = cv_results_df.pivot_table(
     index='param_max_depth',
     columns='param_n_estimators',
