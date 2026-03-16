@@ -445,30 +445,26 @@ plt.title('GridSearchCV Heatmap — RMSE (lower=better)')
 plt.xlabel('n_estimators')
 plt.ylabel('max_depth')
 plt.tight_layout()
-plt.savefig('step10_gridsearch.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step10_gridsearch.png")
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 11 ▸ PIPELINE + CROSS VALIDATION
-# ──────────────────────────────────────────────────────────────
-# 📖 PIPELINE:
+#  PIPELINE:
 #    Chains steps together: [Scaler → Model] as one object.
 #    WHY: Without Pipeline, if you scale X before splitting,
 #         the scaler "sees" test data → DATA LEAKAGE!
 #    Pipeline fits the scaler ONLY on training fold each time.
 #
-# 📖 CROSS VALIDATION:
+#  CROSS VALIDATION:
 #    Splits data into k folds. Trains on k-1, validates on 1.
 #    Rotates k times → k scores. Report mean ± std.
-#    ✅ Better performance estimate than a single train/test split.
+#    Better performance estimate than a single train/test split.
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score, KFold
 
-# --- 11a. Build pipelines for each model ---
+#11a. Build pipelines for each model
 pipelines = {
     'Linear Regression': Pipeline([
         ('scaler', StandardScaler()),           # Step 1: scale features
@@ -496,14 +492,14 @@ pipelines = {
     ]),
 }
 
-# --- 11b. Define K-Fold strategy ---
+#11b. Define K-Fold strategy
 kf = KFold(
     n_splits=5,       # 5 folds
     shuffle=True,     # Shuffle data before splitting
     random_state=42
 )
 
-# --- 11c. Run cross validation on every pipeline ---
+#11c. Run cross validation on every pipeline
 print(f"\n{'Model':<25} {'Mean R²':>9} {'±':>3} {'Std':>7}   {'Mean RMSE':>10} {'±':>3} {'Std':>7}")
 print("-" * 70)
 
@@ -525,7 +521,7 @@ for name, pipe in pipelines.items():
         'R2_scores': r2_scores
     })
 
-# --- 11d. Plot CV score distributions ---
+#11d. Plot CV score distributions
 plt.figure(figsize=(9, 5))
 labels = [r['Model'] for r in cv_records]
 data   = [r['R2_scores'] for r in cv_records]
@@ -540,28 +536,24 @@ plt.title('5-Fold Cross Validation — R² Distribution per Model')
 plt.xticks(rotation=15, ha='right')
 plt.grid(axis='y', alpha=0.4)
 plt.tight_layout()
-plt.savefig('step11_cross_validation.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step11_cross_validation.png")
 
 
-# ──────────────────────────────────────────────────────────────
 # STEP 12 ▸ FINAL MODEL COMPARISON
-# ──────────────────────────────────────────────────────────────
 
 print("\n" + "=" * 55)
-print("  🏆 FINAL MODEL COMPARISON (Test Set)")
+print("  FINAL MODEL COMPARISON (Test Set)")
 print("=" * 55)
 
 results_df = pd.DataFrame(all_results).sort_values('R²', ascending=False)
 print(results_df.to_string(index=False))
 
 best = results_df.iloc[0]
-print(f"\n🥇 Best Model : {best['Model']}")
+print(f"\n Best Model : {best['Model']}")
 print(f"   R²   = {best['R²']}")
 print(f"   RMSE = {best['RMSE']}")
 
-# --- Final comparison bar chart ---
+#Final comparison bar chart
 fig, axes = plt.subplots(1, 2, figsize=(13, 5))
 colors = ['#7c6af7','#56d364','#ffa657','#f97583','#79c0ff','#f778ba'][:len(results_df)]
 
@@ -583,8 +575,6 @@ for i, v in enumerate(results_df['RMSE']):
 plt.suptitle('Final Model Comparison — Student Performance Dataset',
              fontsize=13, fontweight='bold')
 plt.tight_layout()
-plt.savefig('step12_final_comparison.png', dpi=120)
 plt.show()
-print("✅ Plot saved: step12_final_comparison.png")
 
-print("\n🎉 PROJECT COMPLETE! All models trained and compared.")
+print("\n PROJECT COMPLETE! All models trained and compared.")
