@@ -1,14 +1,11 @@
 #  STUDENT PERFORMANCE — STEP BY STEP ML PROJECT
 
 # STEP 0 ▸ INSTALL & IMPORT LIBRARIES
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
-
-print("All libraries imported successfully!")
 
 # STEP 1: LOAD THE DATASET
 # Load the dataset
