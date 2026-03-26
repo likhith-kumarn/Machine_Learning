@@ -89,7 +89,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2,random_st
 print(f"\n Training samples : {X_train.shape[0]}")
 print(f" Testing samples  : {X_test.shape[0]}")
 
-
 # STEP 4 : EVALUATION HELPER FUNCTION
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
@@ -108,14 +107,12 @@ def evaluate(model_name, y_true, y_pred):
 all_results = []   # We'll collect results from every model here
 print(" evaluate() function ready!")
 
-
 # STEP 5 ▸ MODEL 1 — LINEAR REGRESSION
 # WHAT IT DOES:
 #    Finds the best-fit line (or hyperplane) through the data.
 #    Equation:  y = b0 + b1*x1 + b2*x2 + ..
 #    It minimises the sum of squared errors (OLS method).
 #     Great baseline |  Very interpretable
-
 from sklearn.linear_model import LinearRegression
 
 #5a. Create & train the model
